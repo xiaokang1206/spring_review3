@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.mapper.UserMapper">
+<resultMap id="userMap" type="user">
+    <id column="uid" property="id"></id>
+    <result column="username" property="username"></result>
+    <result column="password" property="password"></result>
+    <!--配置集合信息
+      property:集合名称
+      ofType：当前集合中的数据类型
+    -->
+<collection property="orderList" ofType="order">
+<!--封装order的数据-->
+    <id property="id" column="oid"></id>
+    <result column="ordertime" property="ordertime"></result>
+    <result column="total" property="total"></result>
+</collection>
+
+</resultMap>
+<!--一对多查询-->
+    <select id="findAll" resultMap="userMap" >
+        select * ,o.`id` oid from user u,orders o where u.`id`=o.`uid`
+    </select>
+    <!--#################################################################-->
+
+    <resultMap id="userRoleMap" type="user">
+       <id column="userid" property="id"></id>
+        <result column="username" property="username"></result>
+        <result column="password" property="password"></result>
+    <!--user内部的roleList信息-->
+        <collection property="roleList" ofType="role">
+            <id column="roleid" property="id"></id>
+            <result column="rolename" property="roleName"></result>
+            <result column="roledesc" property="roleDesc"></result>
+
+        </collection>
+
+    </resultMap>
+    <!--多对多查询-->
+    <select id="findUserAndRole" resultMap="userRoleMap">
+
+        SELECT * FROM USER u,sys_user_role ur ,sys_role r WHERE u.`id`=ur.userid AND r.id=ur.roleid
+
+    </select>
+
+</mapper>
+
